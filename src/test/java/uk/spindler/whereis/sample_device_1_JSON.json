@@ -1,0 +1,28 @@
+{
+  "reported": {
+    "destination_addresses": [
+      "A Rd, somewhere Else OX7 8QQ, UK"
+    ],
+    "origin_addresses": [
+      "New Rd, Somewhere SN8 8QQ, UK"
+    ],
+    "rows": [
+      {
+        "elements": [
+          {
+            "distance": {
+              "text": "1 m",
+              "value": 0
+            },
+            "duration": {
+              "text": "1 min",
+              "value": 0
+            },
+            "status": "OK"
+          }
+        ]
+      }
+    ],
+    "status": "OK"
+  }
+}

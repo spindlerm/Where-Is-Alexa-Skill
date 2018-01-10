@@ -37,7 +37,6 @@ public class IOTTopic {
 		try {
 			payloadBuffer = ByteBuffer.wrap(payload.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
