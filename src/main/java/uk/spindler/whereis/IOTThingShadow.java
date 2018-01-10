@@ -35,7 +35,7 @@ public class IOTThingShadow {
 		this.region = region;
 	}
 	
-	public String getShadowDocument() {
+	public IOTThingShadowDocument getIOTThingShadowDocument() {
 		String result = "";
 		EndpointConfiguration epc = new EndpointConfiguration(endpointName,region);
         AWSIotData iotd = AWSIotDataClient.builder().withEndpointConfiguration(epc).build();
@@ -53,13 +53,13 @@ public class IOTThingShadow {
         	result = new String(respayload.array());
         }
   
-        return result;
+        return new IOTThingShadowDocument(result);
 	}
 	
 	
 	JSONObject LoadShadowDocument(String fileName) throws IOException {
 		if(fileName!=null)
-			loadDeviceShadowDocumentFromFile(fileName);
+			loadIOTThingShadowFromFile(fileName);
 		else
 			loadDeviceShadowDocumentOverHTTP();
   
@@ -87,9 +87,9 @@ public class IOTThingShadow {
         }
 	}
 	
-    void  loadDeviceShadowDocumentFromFile(String fileName) throws IOException {
+    IOTThingShadowDocument  loadIOTThingShadowFromFile(String fileName) throws IOException {
     	InputStream is = new FileInputStream(fileName);
     	deviceShadowJSONDocument = IOUtils.toString(is, "UTF-8");
-		deviceShadowJSONObject = new JSONObject(deviceShadowJSONDocument);
+    	return new IOTThingShadowDocument(deviceShadowJSONDocument);
     }
 }
