@@ -1,8 +1,7 @@
 package uk.spindler.whereis;
 
-import java.io.File;
+
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -24,8 +23,6 @@ public class IOTThingShadow {
 	private String region;
 	private String deviceShadowJSONDocument;
 	private JSONObject deviceShadowJSONObject;
-	private String testJSONfileName = ".\\src\\main\\java\\uk\\spindler\\helloworld\\sample_device_1_JSON.json";
-	private boolean loadFromFile = true;
 
 	IOTThingShadow()
 	{
