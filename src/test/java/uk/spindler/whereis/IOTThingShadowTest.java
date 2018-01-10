@@ -42,6 +42,7 @@ public class IOTThingShadowTest extends IOTThingShadow {
 		
 		assertTrue(doc.getDuration().equals("1 min"));
 		assertTrue(doc.getDistance().equals("1 m"));
+		assertTrue(doc.getOriginAddress().equals("New Rd, Somewhere SN8 8QQ, UK"));
 		
 	}
 }

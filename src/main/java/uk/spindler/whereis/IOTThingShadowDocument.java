@@ -8,6 +8,7 @@ public class IOTThingShadowDocument {
 	private JSONObject jsonObj = null;
 	private JSONArray destinationAddresses = null;
 	private JSONArray originAddresses = null;
+	private String originAddress = null;
 	private String distance = null;
 	private String duration = null;
 	public  IOTThingShadowDocument(String JSONDoc) {
@@ -17,6 +18,7 @@ public class IOTThingShadowDocument {
 		
 		setDestinationAddresses(jsonObj.getJSONArray("destination_addresses"));
 		setOriginAddresses(jsonObj.getJSONArray("origin_addresses"));
+		setOriginAddress(jsonObj.getJSONArray("origin_addresses").getString(0));
 		setDistance(jsonObj.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("distance").getString("text"));
 		setDuration(jsonObj.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration").getString("text"));
 	}
@@ -51,6 +53,14 @@ public class IOTThingShadowDocument {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+	}
+
+	public String getOriginAddress() {
+		return originAddress;
+	}
+
+	public void setOriginAddress(String originAddress) {
+		this.originAddress = originAddress;
 	}
 }
 
