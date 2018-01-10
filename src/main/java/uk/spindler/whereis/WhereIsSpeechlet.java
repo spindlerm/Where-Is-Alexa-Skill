@@ -31,6 +31,9 @@ import com.amazon.speech.ui.OutputSpeech;
 */
 public class WhereIsSpeechlet implements SpeechletV2{
 private static final Logger log = LoggerFactory.getLogger(WhereIsSpeechlet.class);
+private static final String endpoint = "a1w822yziksjvf.iot.eu-west-1.amazonaws.com";
+private static final String region = "eu-west-1";
+private static final String thingName = "Device3";
 
 @Override
 public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> requestEnvelope) {
@@ -97,7 +100,7 @@ public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> request
  * @return SpeechletResponse spoken and visual response for the given intent
  */
 private SpeechletResponse getWelcomeResponse() {
-    String speechText = "Welcome to the wheres dad skill, you can say wheres dad";
+    String speechText = "Welcome to the wheres dad skill, you can say where is dad";
     return getAskResponse("Where Is Dad", speechText);
 }
 
@@ -107,7 +110,6 @@ private SpeechletResponse getWhereIsResponse() {
 	try {
 		speechText = sendWhereIsDadRequest();
 	} catch (Exception e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
    
@@ -126,7 +128,6 @@ private SpeechletResponse getHowFarAwayResponse() {
 	try {
 		speechText = sendHowFarIsDadRequest();
 	} catch (Exception e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
    
@@ -145,7 +146,6 @@ private SpeechletResponse getHowLongAwayResponse() {
 	try {
 		speechText = sendHowLongAwayIsDadRequest();
 	} catch (Exception e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
    
@@ -166,8 +166,8 @@ private SpeechletResponse getHowLongAwayResponse() {
  * @return SpeechletResponse spoken and visual response for the given intent
  */
 private SpeechletResponse getHelpResponse() {
-    String speechText = "You can say hello to me!";
-    return getAskResponse("HelloWorld", speechText);
+    String speechText = "You can say Where is Dad!";
+    return getAskResponse("WhereIs", speechText);
 }
 
 /**
@@ -225,42 +225,37 @@ private SpeechletResponse getAskResponse(String cardTitle, String speechText) {
 
 private  String sendWhereIsDadRequest() throws Exception {
 	
-	String endpoint = "a1w822yziksjvf.iot.eu-west-1.amazonaws.com";
-   	String region = "eu-west-1";
-	String thingName = "Device3";
 	String result = "Dad is currently in %s";
 	
 	IOTThingShadow iotsh = new IOTThingShadow(endpoint,region, thingName);
 	IOTThingShadowDocument document = iotsh.getIOTThingShadowDocument();
 	
 	log.info(document.getOriginAddress());
+	log.info(document.getDestinationAddress());
 	
 	return String.format(result, document.getOriginAddress());
 }
 
 private  String sendHowFarIsDadRequest() throws Exception {
 	
-	String endpoint = "a1w822yziksjvf.iot.eu-west-1.amazonaws.com";
-   	String region = "eu-west-1";
-	String thingName = "Device3";
 	String result = "Dad is currently %s away";
 	IOTThingShadow iotsh = new IOTThingShadow(endpoint,region, thingName);
 	
 	IOTThingShadowDocument document = iotsh.getIOTThingShadowDocument();
+	
+	log.info(document.getDistance());
 	 
 	return String.format(result, document.getDistance());
 }
 
 private  String sendHowLongAwayIsDadRequest() throws Exception {
-	
-	String endpoint = "a1w822yziksjvf.iot.eu-west-1.amazonaws.com";
-   	String region = "eu-west-1";
-	String thingName = "Device3";
 	String result = "Dad is currently %s away";
 	IOTThingShadow iotsh = new IOTThingShadow(endpoint,region, thingName);
 	
 	IOTThingShadowDocument document = iotsh.getIOTThingShadowDocument();
+	
+	log.info(document.getDuration());
 	 
-	return String.format(result, document.getDistance());
+	return String.format(result, document.getDuration());
 }
 }

@@ -40,9 +40,10 @@ public class IOTThingShadowTest extends IOTThingShadow {
 		
 		IOTThingShadowDocument doc = shObj.loadIOTThingShadowFromFile(testJSONfileName);
 		
-		assertTrue(doc.getDuration().equals("1 min"));
-		assertTrue(doc.getDistance().equals("1 m"));
+		assertTrue(doc.getDuration().equals("15 minutes"));
+		assertTrue(doc.getDistance().equals("1 metre"));
 		assertTrue(doc.getOriginAddress().equals("New Rd, Somewhere SN8 8QQ, UK"));
+		assertTrue(doc.getDestinationAddress().equals( "A Rd, somewhere Else OX7 8QQ, UK"));
 		
 	}
 }

@@ -1,4 +1,4 @@
-{
+{"state" :{
   "reported": {
     "destination_addresses": [
       "A Rd, somewhere Else OX7 8QQ, UK"
@@ -12,11 +12,11 @@
           {
             "distance": {
               "text": "1 m",
-              "value": 0
+              "value": 1
             },
             "duration": {
-              "text": "1 min",
-              "value": 0
+              "text": "15 min",
+              "value": 15
             },
             "status": "OK"
           }
@@ -25,4 +25,5 @@
     ],
     "status": "OK"
   }
+}
 }
