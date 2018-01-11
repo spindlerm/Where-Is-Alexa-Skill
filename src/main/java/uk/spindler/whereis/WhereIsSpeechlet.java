@@ -14,11 +14,18 @@ import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.SessionEndedRequest;
 import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.SpeechletV2;
+import com.amazon.speech.speechlet.interfaces.system.SystemInterface;
+import com.amazon.speech.speechlet.interfaces.system.SystemState;
+import com.amazon.speech.speechlet.services.DirectiveEnvelope;
+import com.amazon.speech.speechlet.services.DirectiveEnvelopeHeader;
+import com.amazon.speech.speechlet.services.DirectiveService;
+import com.amazon.speech.speechlet.services.SpeakDirective;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
@@ -34,6 +41,10 @@ private static final Logger log = LoggerFactory.getLogger(WhereIsSpeechlet.class
 private static final String endpoint = "a1w822yziksjvf.iot.eu-west-1.amazonaws.com";
 private static final String region = "eu-west-1";
 private static final String thingName = "Device3";
+/**
+ * Service to send progressive response directives.
+ */
+private DirectiveService directiveService;
 
 @Override
 public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> requestEnvelope) {
@@ -62,6 +73,13 @@ public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> reques
     String intentName = (intent != null) ? intent.getName() : null;
 
     SpeechletResponse response = null;
+    
+    SystemState systemState = getSystemState(requestEnvelope.getContext());
+    String apiEndpoint = systemState.getApiEndpoint();
+
+    // Dispatch a progressive response to engage the user while fetching events
+    dispatchProgressiveResponse(request.getRequestId(), "Attempting to locate Dads current position", systemState, apiEndpoint);
+    
     
     if ("WhereIsIntent".equals(intentName)) {
     	try {
@@ -258,4 +276,42 @@ private  String sendHowLongAwayIsDadRequest() throws Exception {
 	 
 	return String.format(result, document.getDuration());
 }
+
+/**
+ * Dispatches a progressive response.
+ *
+ * @param requestId
+ *            the unique request identifier
+ * @param text
+ *            the text of the progressive response to send
+ * @param systemState
+ *            the SystemState object
+ * @param apiEndpoint
+ *            the Alexa API endpoint
+ */
+private void dispatchProgressiveResponse(String requestId, String text, SystemState systemState, String apiEndpoint) {
+    DirectiveEnvelopeHeader header = DirectiveEnvelopeHeader.builder().withRequestId(requestId).build();
+    SpeakDirective directive = SpeakDirective.builder().withSpeech(text).build();
+    DirectiveEnvelope directiveEnvelope = DirectiveEnvelope.builder()
+            .withHeader(header).withDirective(directive).build();
+
+    if(systemState.getApiAccessToken() != null && !systemState.getApiAccessToken().isEmpty()) {
+        String token = systemState.getApiAccessToken();
+        try {
+            directiveService.enqueue(directiveEnvelope, apiEndpoint, token);
+        } catch (Exception e) {
+            log.error("Failed to dispatch a progressive response", e);
+        }
+    }
+}
+
+/**
+ * Helper method that retrieves the system state from the request context.
+ * @param context request context.
+ * @return SystemState the systemState
+ */
+private SystemState getSystemState(Context context) {
+    return context.getState(SystemInterface.class, SystemState.class);
+}
+
 }
