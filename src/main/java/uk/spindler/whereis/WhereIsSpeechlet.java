@@ -74,10 +74,10 @@ public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> reques
 
     SpeechletResponse response = null;
     
-    SystemState systemState = getSystemState(requestEnvelope.getContext());
-    String apiEndpoint = systemState.getApiEndpoint();
 
     // Dispatch a progressive response to engage the user while fetching events
+    SystemState systemState = getSystemState(requestEnvelope.getContext());
+    String apiEndpoint = systemState.getApiEndpoint();
     dispatchProgressiveResponse(request.getRequestId(), "Attempting to locate Dads current position", systemState, apiEndpoint);
     
     
