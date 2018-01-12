@@ -25,15 +25,17 @@ public class IOTThingShadowDocument {
 		int distanceValue = jsonObj.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("distance").getInt("value");
 		String distance = jsonObj.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("distance").getString("text");
 		
-		if(distanceValue == 1)
+		
+		if(distanceValue < 2)
 		{
-			distance = distance.replace("km", "kilo metre");
-			distance = distance.replace("m", "metre");
+	
+			distance = distance.replace(" m", " metre");
+			distance = distance.replace(" km", " Kilometer");
 		}
 		else
 		{
-			distance = distance.replace("km", "kilo metres");
-			distance = distance.replace("m", "metres");
+			distance = distance.replace(" m", " metres");
+			distance = distance.replace(" km", " Kilometers");
 		}
 		
 		setDistance(distance);
@@ -41,15 +43,15 @@ public class IOTThingShadowDocument {
 		int durationValue = jsonObj.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration").getInt("value");
 		String duration = jsonObj.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration").getString("text");
 		
-		if(durationValue == 1)
+		if(durationValue <2 )
 		{
-			duration = duration.replace("min", "minute");
-			duration = duration.replace("h", "hour");
+			duration = duration.replace(" mins", " minute");
+			duration = duration.replace(" h", " hour");
 		}
 		else
 		{	
-			duration = duration.replace("min", "minutes");
-			duration = duration.replace("h", "hours");
+			duration = duration.replace(" mins", " minutes");
+			duration = duration.replace(" h", " hours");
 		}
 		setDuration(duration);
 	}
