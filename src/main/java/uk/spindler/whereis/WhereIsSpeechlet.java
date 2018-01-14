@@ -40,7 +40,8 @@ public class WhereIsSpeechlet implements SpeechletV2{
 private static final Logger log = LoggerFactory.getLogger(WhereIsSpeechlet.class);
 private static final String endpoint = "a1w822yziksjvf.iot.eu-west-1.amazonaws.com";
 private static final String region = "eu-west-1";
-private static final String thingName = "Device3";
+private static String thingName = "";
+private static String person = "";
 /**
  * Service to send progressive response directives.
  */
@@ -50,7 +51,7 @@ private DirectiveService directiveService;
 public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> requestEnvelope) {
     log.info("onSessionStarted requestId={}, sessionId={}", requestEnvelope.getRequest().getRequestId(),
             requestEnvelope.getSession().getSessionId());
-    // any initialization logic goes here
+
 }
 
 @Override
@@ -78,8 +79,20 @@ public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> reques
     // Dispatch a progressive response to engage the user while fetching events
     SystemState systemState = getSystemState(requestEnvelope.getContext());
     String apiEndpoint = systemState.getApiEndpoint();
-    dispatchProgressiveResponse(request.getRequestId(), "Attempting to locate Dads current position", systemState, apiEndpoint);
+    dispatchProgressiveResponse(request.getRequestId(), String.format("Attempting to locate %s current position",person), systemState, apiEndpoint);
     
+    if(systemState.getApplication().getApplicationId().equals("amzn1.ask.skill.76b419fd-8c03-426f-8c76-88e3488e75ea"))
+    {
+    	person = "Dad";
+    	thingName = "Device3";
+    } else if(systemState.getApplication().getApplicationId().equals("amzn1.ask.skill.8dcccec9-3769-4d6c-a550-31df17fc3a08")){
+    	person = "Caroline";
+    	thingName = "Caroline";
+    }
+    
+    log.info(person);
+    log.info(thingName);
+    log.info(systemState.getApplication().getApplicationId());
     
     if ("WhereIsIntent".equals(intentName)) {
     	try {
@@ -101,7 +114,7 @@ public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> reques
     } else if ("AMAZON.HelpIntent".equals(intentName)) {
         return getHelpResponse();
     } else {
-        return getAskResponse("Where Is Dad", "This is unsupported.  Please try something else.");
+        return getAskResponse(String.format("Where Is %s", person), "This is unsupported.  Please try something else.");
     }
 }
 
@@ -118,13 +131,13 @@ public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> request
  * @return SpeechletResponse spoken and visual response for the given intent
  */
 private SpeechletResponse getWelcomeResponse() {
-    String speechText = "Welcome to the wheres dad skill, you can say where is dad";
-    return getAskResponse("Where Is Dad", speechText);
+    String speechText = String.format("Welcome to the wheres %s skill, you can say where is %s", person, person);
+    return getAskResponse(String.format("Where Is %s", person), speechText);
 }
 
 private SpeechletResponse getWhereIsResponse() {
    
-	String speechText = "I cannot locate Dad at this time, please try again later";
+	 String speechText = String.format("I cannot locate %s at this time, please try again later",person);
 	try {
 		speechText = sendWhereIsDadRequest();
 	} catch (Exception e) {
@@ -132,7 +145,7 @@ private SpeechletResponse getWhereIsResponse() {
 	}
    
     // Create the Simple card content.
-    SimpleCard card = getSimpleCard("Where Is Dad", speechText);
+    SimpleCard card = getSimpleCard(String.format("Where Is %s", person), speechText);
 
     // Create the plain text output.
     PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
@@ -142,7 +155,7 @@ private SpeechletResponse getWhereIsResponse() {
 
 private SpeechletResponse getHowFarAwayResponse() {
 	   
-	String speechText = "I cannot locate Dad at this time, please try again later";
+	String speechText = String.format("I cannot locate %s at this time, please try again later", person);
 	try {
 		speechText = sendHowFarIsDadRequest();
 	} catch (Exception e) {
@@ -150,7 +163,7 @@ private SpeechletResponse getHowFarAwayResponse() {
 	}
    
     // Create the Simple card content.
-    SimpleCard card = getSimpleCard("Where Is Dad", speechText);
+    SimpleCard card = getSimpleCard(String.format("Where Is %s", person), speechText);
 
     // Create the plain text output.
     PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
@@ -160,7 +173,7 @@ private SpeechletResponse getHowFarAwayResponse() {
 
 private SpeechletResponse getHowLongAwayResponse() {
 	   
-	String speechText = "I cannot locate Dad at this time, please try again later";
+	String speechText = String.format("I cannot locate %s at this time, please try again later",person);
 	try {
 		speechText = sendHowLongAwayIsDadRequest();
 	} catch (Exception e) {
@@ -168,7 +181,7 @@ private SpeechletResponse getHowLongAwayResponse() {
 	}
    
     // Create the Simple card content.
-    SimpleCard card = getSimpleCard("Where Is Dad", speechText);
+    SimpleCard card = getSimpleCard(String.format("Where Is %s", person), speechText);
 
     // Create the plain text output.
     PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
@@ -184,7 +197,7 @@ private SpeechletResponse getHowLongAwayResponse() {
  * @return SpeechletResponse spoken and visual response for the given intent
  */
 private SpeechletResponse getHelpResponse() {
-    String speechText = "You can say Where is Dad!";
+    String speechText = String.format("You can say Where is %s!", person);
     return getAskResponse("WhereIs", speechText);
 }
 
@@ -242,8 +255,7 @@ private SpeechletResponse getAskResponse(String cardTitle, String speechText) {
 }
 
 private  String sendWhereIsDadRequest() throws Exception {
-	
-	String result = "Dad is currently in %s";
+	String result = "%s is currently in %s";
 	
 	IOTThingShadow iotsh = new IOTThingShadow(endpoint,region, thingName);
 	IOTThingShadowDocument document = iotsh.getIOTThingShadowDocument();
@@ -251,30 +263,30 @@ private  String sendWhereIsDadRequest() throws Exception {
 	log.info(document.getOriginAddress());
 	log.info(document.getDestinationAddress());
 	
-	return String.format(result, document.getOriginAddress());
+	return String.format(result, person, document.getOriginAddress());
 }
 
 private  String sendHowFarIsDadRequest() throws Exception {
 	
-	String result = "Dad is currently %s away";
+	String result = "%s is currently %s away";
 	IOTThingShadow iotsh = new IOTThingShadow(endpoint,region, thingName);
 	
 	IOTThingShadowDocument document = iotsh.getIOTThingShadowDocument();
 	
 	log.info(document.getDistance());
 	 
-	return String.format(result, document.getDistance());
+	return String.format(result, person, document.getDistance());
 }
 
 private  String sendHowLongAwayIsDadRequest() throws Exception {
-	String result = "Dad is currently %s away";
+	String result = "%s is currently %s away";
 	IOTThingShadow iotsh = new IOTThingShadow(endpoint,region, thingName);
 	
 	IOTThingShadowDocument document = iotsh.getIOTThingShadowDocument();
 	
 	log.info(document.getDuration());
 	 
-	return String.format(result, document.getDuration());
+	return String.format(result, person, document.getDuration());
 }
 
 /**

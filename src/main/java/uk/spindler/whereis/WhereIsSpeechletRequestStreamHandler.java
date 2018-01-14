@@ -28,8 +28,9 @@ public final class WhereIsSpeechletRequestStreamHandler extends SpeechletRequest
          * This Id can be found on https://developer.amazon.com/edw/home.html#/ "Edit" the relevant
          * Alexa Skill and put the relevant Application Ids in this Set.
          */
-        supportedApplicationIds = new HashSet<String>();
-         supportedApplicationIds.add("amzn1.ask.skill.76b419fd-8c03-426f-8c76-88e3488e75ea");
+         supportedApplicationIds = new HashSet<String>();
+         supportedApplicationIds.add("amzn1.ask.skill.76b419fd-8c03-426f-8c76-88e3488e75ea");//dad
+         supportedApplicationIds.add("amzn1.ask.skill.8dcccec9-3769-4d6c-a550-31df17fc3a08");//mumm
     }
 
     public WhereIsSpeechletRequestStreamHandler() {
